@@ -1,5 +1,29 @@
 {
   "dependencies": {
+    "com.google.ads.mobile": {
+      "version": "10.3.0",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {
+        "com.google.external-dependency-manager": "1.2.186",
+        "com.unity.modules.androidjni": "1.0.0"
+      },
+      "url": "https://package.openupm.com"
+    },
+    "com.google.external-dependency-manager": {
+      "version": "1.2.186",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {},
+      "url": "https://package.openupm.com"
+    },
+    "com.kem.ktool": {
+      "version": "https://github.com/KemLib/KTool.git?path=/Packages/KTool#develop",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "120bc2b49fe8d1b6f110afc7f5053792825c9cec"
+    },
     "com.unity.2d.animation": {
       "version": "10.1.4",
       "depth": 1,
