@@ -69,6 +69,8 @@ namespace KPlugin.GoogleAdMob.Example
         {
             if (IsShow)
                 return;
+            Progress = 0;
+            TaskName = string.Empty;
             panelMenu.gameObject.SetActive(true);
         }
         public void Hide()

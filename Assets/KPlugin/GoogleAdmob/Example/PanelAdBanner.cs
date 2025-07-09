@@ -22,8 +22,7 @@ namespace KPlugin.GoogleAdMob.Example
         private const string ERROR_ADD_EMPTY = "Ad Banner: No objects to select",
             ERROR_AD_IS_INITED = "Ad Banner: ad is inited",
             ERROR_AD_IS_NOT_INIT = "Ad Banner: ad not init",
-            ERROR_AD_IS_NOT_LOAD = "Ad Banner: ad not load",
-            ERROR_AD_IS_NOT_SHOW = "Ad Banner: ad not show";
+            ERROR_AD_IS_LOADED = "Ad Rewarded: ad is loaded";
 
         [SerializeField]
         private TMP_Dropdown dropdownAd;
@@ -113,6 +112,8 @@ namespace KPlugin.GoogleAdMob.Example
             //
             if (!SelectAd.IsInited)
                 panelLog.AddLog(ERROR_AD_IS_NOT_INIT);
+            else if (SelectAd.IsLoaded)
+                panelLog.AddLog(ERROR_AD_IS_LOADED);
             else
                 SelectAd.Load();
         }
@@ -123,12 +124,7 @@ namespace KPlugin.GoogleAdMob.Example
             //
             panelLog.AddLog(CLICK_SHOW);
             //
-            if (!SelectAd.IsInited)
-                panelLog.AddLog(ERROR_AD_IS_NOT_INIT);
-            else if (!SelectAd.IsLoaded)
-                panelLog.AddLog(ERROR_AD_IS_NOT_LOAD);
-            else
-                SelectAd.Show();
+            SelectAd.Show();
         }
         public void OnClick_Hide()
         {
@@ -137,12 +133,7 @@ namespace KPlugin.GoogleAdMob.Example
             //
             panelLog.AddLog(CLICK_HIDE);
             //
-            if (!SelectAd.IsInited)
-                panelLog.AddLog(ERROR_AD_IS_NOT_INIT);
-            else if (!SelectAd.IsLoaded)
-                panelLog.AddLog(ERROR_AD_IS_NOT_LOAD);
-            else
-                SelectAd.Hide();
+            SelectAd.Hide();
         }
         #endregion
 
@@ -174,7 +165,7 @@ namespace KPlugin.GoogleAdMob.Example
             selectAd.OnAdRevenuePaid -= SelectAd_OnAdRevenuePaid;
             selectAd.OnAdDestroy -= SelectAd_OnAdDestroy;
         }
-        private void SelectAd_OnAdInited(Ad adSource)
+        private void SelectAd_OnAdInited(Ad adSource, bool isSuccess)
         {
             panelLog.AddLog(AD_EVENT_INIT);
         }

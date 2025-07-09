@@ -11,13 +11,9 @@ namespace KPlugin.GoogleAdMob
         #region Properties
         public const string ADMOB_SCOURCE = "GoogleAdMob",
             ADMOB_COUNTRY_CODE = "UnknownCountry";
+        public const float VALUE_SCALE = 1000000;
 
         public static AdMobManager Instance
-        {
-            get;
-            private set;
-        }
-        public static bool IsInit
         {
             get;
             private set;
@@ -36,8 +32,10 @@ namespace KPlugin.GoogleAdMob
         [SerializeField, GetComponent(GetComponentType.InGameObject_AllChildren, true)]
         private AdMobRewardedInterstitial[] adRewardedInterstitials;
 
+        private bool isInit;
         private InitTrackingSource initTracking;
 
+        public bool IsInit => isInit;
         private bool IsIniting => initTracking != null;
         #endregion
 
@@ -72,7 +70,7 @@ namespace KPlugin.GoogleAdMob
         }
         private void AdMob_OnInitComplete(InitializationStatus initStatus)
         {
-            IsInit = true;
+            isInit = true;
             initTracking.CompleteSuccess();
             initTracking = null;
             //

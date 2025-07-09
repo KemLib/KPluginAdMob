@@ -21,9 +21,8 @@ namespace KPlugin.GoogleAdMob.Example
             ERROR_AD_IS_INITED = "Ad Interstitial: ad is inited",
             ERROR_AD_IS_NOT_INIT = "Ad Interstitial: ad not init",
             ERROR_AD_IS_LOADED = "Ad Interstitial: ad is loaded",
-            ERROR_AD_IS_NOT_LOAD = "Ad Interstitial: ad not load",
-            ERROR_AD_IS_NOT_READY = "Ad Interstitial: ad not ready",
-            ERROR_AD_IS_SHOW = "Ad Interstitial: ad is showed";
+            ERROR_AD_SHOW = "Ad Interstitial show success",
+            ERROR_AD_SHOW_FAIL = "Ad Interstitial show fail: {0}";
 
         [SerializeField]
         private TMP_Dropdown dropdownAd;
@@ -125,16 +124,11 @@ namespace KPlugin.GoogleAdMob.Example
             //
             panelLog.AddLog(CLICK_SHOW);
             //
-            if (!SelectAd.IsInited)
-                panelLog.AddLog(ERROR_AD_IS_NOT_INIT);
-            else if (!SelectAd.IsLoaded)
-                panelLog.AddLog(ERROR_AD_IS_NOT_LOAD);
-            else if (SelectAd.IsShow)
-                panelLog.AddLog(ERROR_AD_IS_SHOW);
-            else if (!SelectAd.IsReady)
-                panelLog.AddLog(ERROR_AD_IS_NOT_READY);
+            AdInterstitialTracking adTracking = SelectAd.Show();
+            if (adTracking.IsShow)
+                panelLog.AddLog(ERROR_AD_SHOW);
             else
-                SelectAd.Show();
+                panelLog.AddLog(string.Format(ERROR_AD_SHOW_FAIL, adTracking.ErrorMessage));
         }
         #endregion
 
@@ -165,7 +159,7 @@ namespace KPlugin.GoogleAdMob.Example
             selectAd.OnAdRevenuePaid -= SelectAd_OnAdRevenuePaid;
             selectAd.OnAdDestroy -= SelectAd_OnAdDestroy;
         }
-        private void SelectAd_OnAdInited(Ad adSource)
+        private void SelectAd_OnAdInited(Ad adSource, bool isSuccess)
         {
             panelLog.AddLog(AD_EVENT_INIT);
         }

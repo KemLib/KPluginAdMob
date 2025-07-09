@@ -22,9 +22,8 @@ namespace KPlugin.GoogleAdMob.Example
             ERROR_AD_IS_INITED = "Ad RewardedInterstitial: ad is inited",
             ERROR_AD_IS_NOT_INIT = "Ad RewardedInterstitial: ad not init",
             ERROR_AD_IS_LOADED = "Ad RewardedInterstitial: ad is loaded",
-            ERROR_AD_IS_NOT_LOAD = "Ad RewardedInterstitial: ad not load",
-            ERROR_AD_IS_NOT_READY = "Ad RewardedInterstitial: ad not ready",
-            ERROR_AD_IS_SHOW = "Ad RewardedInterstitial: ad is showed";
+            ERROR_AD_SHOW = "Ad RewardedInterstitial show success",
+            ERROR_AD_SHOW_FAIL = "Ad RewardedInterstitial show fail: {0}";
 
         [SerializeField]
         private TMP_Dropdown dropdownAd;
@@ -47,14 +46,14 @@ namespace KPlugin.GoogleAdMob.Example
         {
             this.panelLog = panelLog;
             //
-            if (manager == null || manager.RewardedInterstitial_Count() == 0)
+            if (manager == null || manager.Rewarded_Count() == 0)
             {
                 dropdownAd.options.Clear();
                 return;
             }
             //
             dropdownAd.options.Clear();
-            int count = manager.RewardedInterstitial_Count();
+            int count = manager.Rewarded_Count();
             for (int i = 0; i < count; i++)
             {
                 AdMobRewardedInterstitial ad = manager.RewardedInterstitial_Get(i);
@@ -126,16 +125,11 @@ namespace KPlugin.GoogleAdMob.Example
             //
             panelLog.AddLog(CLICK_SHOW);
             //
-            if (!SelectAd.IsInited)
-                panelLog.AddLog(ERROR_AD_IS_NOT_INIT);
-            else if (!SelectAd.IsLoaded)
-                panelLog.AddLog(ERROR_AD_IS_NOT_LOAD);
-            else if (SelectAd.IsShow)
-                panelLog.AddLog(ERROR_AD_IS_SHOW);
-            else if (!SelectAd.IsReady)
-                panelLog.AddLog(ERROR_AD_IS_NOT_READY);
+            AdRewardedTracking adTracking = SelectAd.Show();
+            if (adTracking.IsShow)
+                panelLog.AddLog(ERROR_AD_SHOW);
             else
-                SelectAd.Show();
+                panelLog.AddLog(string.Format(ERROR_AD_SHOW_FAIL, adTracking.ErrorMessage));
         }
         #endregion
 
@@ -169,7 +163,7 @@ namespace KPlugin.GoogleAdMob.Example
             selectAd.OnAdDestroy -= SelectAd_OnAdDestroy;
             selectAd.OnAdReceivedReward -= SelectAd_OnAdReceivedReward;
         }
-        private void SelectAd_OnAdInited(Ad adSource)
+        private void SelectAd_OnAdInited(Ad adSource, bool isSuccess)
         {
             panelLog.AddLog(AD_EVENT_INIT);
         }
