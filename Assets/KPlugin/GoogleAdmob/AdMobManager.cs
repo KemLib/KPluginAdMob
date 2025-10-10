@@ -40,7 +40,7 @@ namespace KPlugin.GoogleAdMob
         #endregion
 
         #region Init
-        public InitTracking InitBegin()
+        public IInitTracking InitBegin()
         {
             if (Instance == null)
             {
@@ -49,7 +49,7 @@ namespace KPlugin.GoogleAdMob
                 return AdMob_Init();
             }
             //
-            return InitTracking.Success;
+            return IInitTracking.Success;
         }
 
         public void InitEnd()
@@ -59,12 +59,12 @@ namespace KPlugin.GoogleAdMob
         #endregion
 
         #region AdMob
-        private InitTracking AdMob_Init()
+        private IInitTracking AdMob_Init()
         {
             if (IsInit || IsIniting)
-                return InitTracking.Success;
+                return IInitTracking.Success;
             //
-            initTracking = new InitTrackingSource(true);
+            initTracking = new InitTrackingSource(true, true);
             MobileAds.Initialize(AdMob_OnInitComplete);
             return initTracking;
         }

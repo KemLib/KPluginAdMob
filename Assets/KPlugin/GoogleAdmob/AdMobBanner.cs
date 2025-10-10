@@ -79,12 +79,12 @@ namespace KPlugin.GoogleAdMob
         #endregion
 
         #region Unity Event
-        public InitTracking InitBegin()
+        public IInitTracking InitBegin()
         {
             if (IsDestroy || IsInited || initTrackingSource != null)
-                return InitTracking.Fail;
+                return IInitTracking.Fail;
             //
-            initTrackingSource = new InitTrackingSource(initIndispensable);
+            initTrackingSource = new InitTrackingSource(initIndispensable, true);
             OnAdInited += Init_OnAdInited;
             Init();
             return initTrackingSource;
@@ -155,10 +155,10 @@ namespace KPlugin.GoogleAdMob
             else
                 PushEvent_Destroy();
         }
-        public override AdBannerTracking Show()
+        public override IAdBannerTracking Show()
         {
             if (IsDestroy)
-                return new AdBannerTrackingSource(ERROR_IS_DESTROY);
+                return new AdBannerTrackingSource(this, ERROR_IS_DESTROY);
             //
             if (IsShow)
             {
@@ -181,7 +181,7 @@ namespace KPlugin.GoogleAdMob
                 IsShow = false;
                 //
                 PushEvent_Hidden();
-                adTrackingSource.Hidden();
+                adTrackingSource.PushEvent_Hidden();
                 adTrackingSource = null;
             }
             else
@@ -194,7 +194,7 @@ namespace KPlugin.GoogleAdMob
             yield return new WaitForEndOfFrame();
             adObject.Show();
             PushEvent_Displayed(true);
-            adTrackingSource.Displayed(true);
+            adTrackingSource.PushEvent_Displayed(true);
         }
         #endregion
 
@@ -277,7 +277,7 @@ namespace KPlugin.GoogleAdMob
                 {
                     adObject.Show();
                     PushEvent_Displayed(true);
-                    adTrackingSource.Displayed(true);
+                    adTrackingSource.PushEvent_Displayed(true);
                 }
                 else
                 {
@@ -311,17 +311,17 @@ namespace KPlugin.GoogleAdMob
         private void Ad_OnFullScreenContentOpened()
         {
             PushEvent_Expanded(true);
-            adTrackingSource.Expanded(true);
+            adTrackingSource.PushEvent_Expanded(true);
         }
         private void Ad_OnFullScreenContentClosed()
         {
             PushEvent_Expanded(false);
-            adTrackingSource.Expanded(false);
+            adTrackingSource.PushEvent_Expanded(false);
         }
         private void Ad_OnClicked()
         {
             PushEvent_Clicked();
-            adTrackingSource.Clicked();
+            adTrackingSource.PushEvent_Clicked();
         }
         private void Ad_OnPaid(AdValue adValue)
         {
@@ -338,7 +338,7 @@ namespace KPlugin.GoogleAdMob
                 adValue.CurrencyCode);
             //
             PushEvent_RevenuePaid(revenuePaid);
-            adTrackingSource.RevenuePaid(revenuePaid);
+            adTrackingSource.PushEvent_RevenuePaid(revenuePaid);
         }
         private void Ad_OnImpressionRecorded()
         {

@@ -125,8 +125,8 @@ namespace KPlugin.GoogleAdMob.Example
             //
             panelLog.AddLog(CLICK_SHOW);
             //
-            AdRewardedTracking adTracking = SelectAd.Show();
-            if (adTracking.IsShow)
+            IAdRewardedTracking adTracking = SelectAd.Show();
+            if (adTracking.IsSuccessfully)
                 panelLog.AddLog(ERROR_AD_SHOW);
             else
                 panelLog.AddLog(string.Format(ERROR_AD_SHOW_FAIL, adTracking.ErrorMessage));

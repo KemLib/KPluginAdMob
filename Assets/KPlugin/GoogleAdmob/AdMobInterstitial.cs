@@ -73,12 +73,12 @@ namespace KPlugin.GoogleAdMob
         #endregion
 
         #region Init
-        public InitTracking InitBegin()
+        public IInitTracking InitBegin()
         {
             if (IsDestroy || IsInited || initTrackingSource != null)
-                return InitTracking.Fail;
+                return IInitTracking.Fail;
             //
-            initTrackingSource = new InitTrackingSource(initIndispensable);
+            initTrackingSource = new InitTrackingSource(initIndispensable, true);
             OnAdInited += Init_OnAdInited;
             Init();
             return initTrackingSource;
@@ -142,18 +142,18 @@ namespace KPlugin.GoogleAdMob
             else
                 PushEvent_Destroy();
         }
-        public override AdInterstitialTracking Show()
+        public override IAdTracking Show()
         {
             if (IsDestroy)
-                return new AdInterstitialTrackingSource(ERROR_SHOW_FAIL_AD_IS_DESTROY);
+                return new AdInterstitialTrackingSource(this, ERROR_SHOW_FAIL_AD_IS_DESTROY);
             if (!IsInited)
-                return new AdInterstitialTrackingSource(ERROR_SHOW_FAIL_AD_NOT_INIT);
+                return new AdInterstitialTrackingSource(this, ERROR_SHOW_FAIL_AD_NOT_INIT);
             if (!IsLoaded)
-                return new AdInterstitialTrackingSource(ERROR_SHOW_FAIL_AD_NOT_LOADED);
+                return new AdInterstitialTrackingSource(this, ERROR_SHOW_FAIL_AD_NOT_LOADED);
             if (!IsReady)
-                return new AdInterstitialTrackingSource(ERROR_SHOW_FAIL_AD_NOT_READY);
+                return new AdInterstitialTrackingSource(this, ERROR_SHOW_FAIL_AD_NOT_READY);
             if (IsShow)
-                return new AdInterstitialTrackingSource(ERROR_SHOW_FAIL_AD_IS_SHOWED);
+                return new AdInterstitialTrackingSource(this, ERROR_SHOW_FAIL_AD_IS_SHOWED);
             //
             adTrackingSource = new AdInterstitialTrackingSource(this);
             IsShow = true;
@@ -280,7 +280,7 @@ namespace KPlugin.GoogleAdMob
         private void Ad_OnFullScreenContentOpened()
         {
             PushEvent_Displayed(true);
-            adTrackingSource.Displayed(true);
+            adTrackingSource.PushEvent_Displayed(true);
         }
         private void Ad_OnFullScreenContentFailed(AdError adError)
         {
@@ -292,7 +292,7 @@ namespace KPlugin.GoogleAdMob
             if (IsDestroy)
             {
                 PushEvent_Displayed(false);
-                adTrackingSource.Displayed(false);
+                adTrackingSource.PushEvent_Displayed(false);
                 //
                 Ad_Destroy();
             }
@@ -304,13 +304,13 @@ namespace KPlugin.GoogleAdMob
                     StartCoroutine(Ad_Load());
                 }
                 PushEvent_Displayed(false);
-                adTrackingSource.Displayed(false);
+                adTrackingSource.PushEvent_Displayed(false);
             }
         }
         private void Ad_OnClicked()
         {
             PushEvent_Clicked();
-            adTrackingSource.Clicked();
+            adTrackingSource.PushEvent_Clicked();
         }
         private void Ad_OnFullScreenContentClosed()
         {
@@ -319,7 +319,7 @@ namespace KPlugin.GoogleAdMob
             if (IsDestroy)
             {
                 PushEvent_Hidden();
-                adTrackingSource.Hidden();
+                adTrackingSource.PushEvent_Hidden();
                 //
                 Ad_Destroy();
             }
@@ -331,7 +331,7 @@ namespace KPlugin.GoogleAdMob
                     StartCoroutine(Ad_Load());
                 }
                 PushEvent_Hidden();
-                adTrackingSource.Hidden();
+                adTrackingSource.PushEvent_Hidden();
             }
         }
         private void Ad_OnPaid(AdValue adValue)
@@ -349,7 +349,7 @@ namespace KPlugin.GoogleAdMob
                 adValue.CurrencyCode);
             //
             PushEvent_RevenuePaid(revenuePaid);
-            adTrackingSource.RevenuePaid(revenuePaid);
+            adTrackingSource.PushEvent_RevenuePaid(revenuePaid);
         }
         private void Ad_OnImpressionRecorded()
         {
