@@ -4,9 +4,7 @@ using KTool.Advertisement;
 using KTool.Init;
 using System;
 using System.Collections;
-using System.Xml.Linq;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace KPlugin.GoogleAdMob
 {
@@ -84,7 +82,7 @@ namespace KPlugin.GoogleAdMob
             if (IsDestroy || IsInited || initTrackingSource != null)
                 return IInitTracking.Fail;
             //
-            initTrackingSource = new InitTrackingSource(initIndispensable, true);
+            initTrackingSource = new InitTrackingSource(initIndispensable);
             OnAdInited += Init_OnAdInited;
             Init();
             return initTrackingSource;
@@ -99,7 +97,7 @@ namespace KPlugin.GoogleAdMob
             if (isSuccess)
             {
                 OnAdLoaded += Init_OnLoaded;
-                if(!isLoading)
+                if (!isLoading)
                 {
                     isLoading = true;
                     StartCoroutine(Ad_Load());

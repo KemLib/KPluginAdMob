@@ -64,7 +64,7 @@ namespace KPlugin.GoogleAdMob
             if (IsInit || IsIniting)
                 return IInitTracking.Success;
             //
-            initTracking = new InitTrackingSource(true, true);
+            initTracking = new InitTrackingSource(true);
             MobileAds.Initialize(AdMob_OnInitComplete);
             return initTracking;
         }

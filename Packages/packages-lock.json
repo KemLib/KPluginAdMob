@@ -22,7 +22,7 @@
       "depth": 0,
       "source": "git",
       "dependencies": {},
-      "hash": "fb5838c9cc8728c5f5b862c226a5857c38447011"
+      "hash": "8a3dd3dc65172a9016519fa6667168a788dec663"
     },
     "com.unity.2d.animation": {
       "version": "10.2.1",
@@ -119,7 +119,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.burst": {
-      "version": "1.8.24",
+      "version": "1.8.25",
       "depth": 3,
       "source": "registry",
       "dependencies": {
@@ -209,7 +209,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.test-framework": {
-      "version": "1.5.1",
+      "version": "1.6.0",
       "depth": 0,
       "source": "builtin",
       "dependencies": {
@@ -219,7 +219,7 @@
       }
     },
     "com.unity.test-framework.performance": {
-      "version": "3.1.0",
+      "version": "3.2.0",
       "depth": 3,
       "source": "registry",
       "dependencies": {
