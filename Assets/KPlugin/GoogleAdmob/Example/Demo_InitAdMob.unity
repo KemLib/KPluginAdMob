@@ -244,11 +244,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2f2cbe191e597ea458c2b6cb9a3c55b2, type: 3}
---- !u!1 &80897258 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1792497991469692640, guid: 2f2cbe191e597ea458c2b6cb9a3c55b2, type: 3}
-  m_PrefabInstance: {fileID: 80897257}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &115395584
 GameObject:
   m_ObjectHideFlags: 0
@@ -382,15 +377,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 322631393}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 272838bc1d6b11a4fb481c9ad187a92b, type: 3}
+  m_Script: {fileID: 11500000, guid: dd4d6fae98793cf41820d5800ece7aae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  adName: KTool_AdMob_Rewarded
+  adName: KPlugin_AdMob_Rewarded
   isAutoReload: 1
   initIndispensable: 0
-  setInstance: 1
+  setInstance: 0
   indexAd: 0
---- !u!1 &458022950
+--- !u!1 &479115811
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -398,46 +393,42 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 458022952}
-  - component: {fileID: 458022951}
+  - component: {fileID: 479115813}
+  - component: {fileID: 479115812}
   m_Layer: 0
-  m_Name: KPlugin_AdMob_RewardedInterstitial
+  m_Name: LoadScene
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &458022951
+--- !u!114 &479115812
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 458022950}
+  m_GameObject: {fileID: 479115811}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 670df87a51d1d4245bb5185d23a316b6, type: 3}
+  m_Script: {fileID: 11500000, guid: 36eda4391935fbd4bb1ec4740f9187c1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  adName: KTool_AdMob_RewardedInterstitial
-  isAutoReload: 1
-  initIndispensable: 0
-  setInstance: 1
-  indexAd: 0
---- !u!4 &458022952
+  sceneName: Demo_AdMob
+--- !u!4 &479115813
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 458022950}
+  m_GameObject: {fileID: 479115811}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 2055385825}
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &484132057
 GameObject:
@@ -468,7 +459,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 11fe5fbd15868e241b5e4570bd4db2a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  objectListener: {fileID: 80897258}
 --- !u!4 &484132059
 Transform:
   m_ObjectHideFlags: 0
@@ -525,13 +515,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 1045157430}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f6610dca151530c4092f5a2236f678f4, type: 3}
+  m_Script: {fileID: 11500000, guid: 5e2cd1e1b51c8ab44a29c36cb9bf63d6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  adName: KTool_AdMob_AppOpen
-  isAutoReload: 1
+  adName: KPlugin_AdMob_AppOpen
+  isAutoReload: 0
   initIndispensable: 0
-  setInstance: 1
+  setInstance: 0
   indexAd: 0
 --- !u!1 &1115313039
 GameObject:
@@ -574,17 +564,17 @@ MonoBehaviour:
   m_GameObject: {fileID: 1115313039}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cc834d452b2eb5541b0dcb3f1d26cc6a, type: 3}
+  m_Script: {fileID: 11500000, guid: 607a78dcd2ebdbe46bb43a1518374194, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  adName: KTool_AdMob_Banner
+  adName: KPlugin_AdMob_Banner
   isAutoReload: 1
-  adPosition: 2
+  adPosition: 8
   adSize: 1
-  position: {x: 10, y: 500}
+  position: {x: 0, y: 0}
   size: {x: 0, y: 0}
   initIndispensable: 0
-  setInstance: 1
+  setInstance: 0
   indexAd: 0
 --- !u!1 &1407244699
 GameObject:
@@ -627,13 +617,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 1407244699}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d17fb7e7167fd144a97ea74cea2c2c72, type: 3}
+  m_Script: {fileID: 11500000, guid: cbb1910bf735cbf40b1c756d87d361df, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  adName: KTool_AdMob_Interstitial
+  adName: KPlugin_AdMob_Interstitial
   isAutoReload: 1
   initIndispensable: 0
-  setInstance: 1
+  setInstance: 0
   indexAd: 0
 --- !u!1 &1788145010
 GameObject:
@@ -679,16 +669,30 @@ MonoBehaviour:
     gameobjects:
     - {fileID: 1407244699}
     - {fileID: 322631393}
-    - {fileID: 458022950}
-  afterInit: 1
-  nextScene: Demo_AdMob
-  loadSceneMode: 0
   onBegin:
+    m_PersistentCalls:
+      m_Calls: []
+  onStep:
+    m_PersistentCalls:
+      m_Calls: []
+  onProgress:
     m_PersistentCalls:
       m_Calls: []
   onEnd:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 479115812}
+        m_TargetAssemblyTypeName: KPlugin.GoogleAdmob.Example.LoadScene, Assembly-CSharp
+        m_MethodName: NextScene
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!4 &1788145012
 Transform:
   m_ObjectHideFlags: 0
@@ -738,7 +742,6 @@ Transform:
   - {fileID: 1115313040}
   - {fileID: 1407244700}
   - {fileID: 322631394}
-  - {fileID: 458022952}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2055385826
@@ -750,9 +753,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 2055385824}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7b742ec26aedfda45958e585bac3d3b7, type: 3}
+  m_Script: {fileID: 11500000, guid: 76a13a8f26d4f8f4fa7ad502105ff62a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  initIndispensable: 0
+  tagForUnderAgeOfConsent: 0
   testDeviceIds: []
   adAppOpens:
   - {fileID: 1045157432}
@@ -762,15 +767,14 @@ MonoBehaviour:
   - {fileID: 1407244701}
   adRewardeds:
   - {fileID: 322631395}
-  adRewardedInterstitials:
-  - {fileID: 458022951}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 115395587}
   - {fileID: 44316246}
+  - {fileID: 2055385825}
   - {fileID: 1788145012}
   - {fileID: 484132059}
-  - {fileID: 2055385825}
   - {fileID: 80897257}
+  - {fileID: 479115813}

@@ -15,8 +15,6 @@ namespace KPlugin.GoogleAdMob.Example
         private PanelAdInterstitial panelAdInterstitial;
         [SerializeField]
         private PanelAdRewarded panelAdRewarded;
-        [SerializeField]
-        private PanelAdRewardedInterstitial panelAdRewardedInterstitial;
         #endregion
 
         #region Unity Events
@@ -34,7 +32,6 @@ namespace KPlugin.GoogleAdMob.Example
             panelAdBanner.Init(panelLog);
             panelAdInterstitial.Init(panelLog);
             panelAdRewarded.Init(panelLog);
-            panelAdRewardedInterstitial.Init(panelLog);
             //
             panelAdAppOpen.Show();
         }
@@ -47,7 +44,6 @@ namespace KPlugin.GoogleAdMob.Example
             panelAdBanner.Hide();
             panelAdInterstitial.Hide();
             panelAdRewarded.Hide();
-            panelAdRewardedInterstitial.Hide();
         }
         public void OnClick_Banner()
         {
@@ -55,7 +51,6 @@ namespace KPlugin.GoogleAdMob.Example
             panelAdBanner.Show();
             panelAdInterstitial.Hide();
             panelAdRewarded.Hide();
-            panelAdRewardedInterstitial.Hide();
         }
         public void OnClick_Interstitial()
         {
@@ -63,7 +58,6 @@ namespace KPlugin.GoogleAdMob.Example
             panelAdBanner.Hide();
             panelAdInterstitial.Show();
             panelAdRewarded.Hide();
-            panelAdRewardedInterstitial.Hide();
         }
         public void OnClick_Rewarded()
         {
@@ -71,7 +65,6 @@ namespace KPlugin.GoogleAdMob.Example
             panelAdBanner.Hide();
             panelAdInterstitial.Hide();
             panelAdRewarded.Show();
-            panelAdRewardedInterstitial.Hide();
         }
         public void OnClick_RewardedInterstitial()
         {
@@ -79,7 +72,6 @@ namespace KPlugin.GoogleAdMob.Example
             panelAdBanner.Hide();
             panelAdInterstitial.Hide();
             panelAdRewarded.Hide();
-            panelAdRewardedInterstitial.Show();
         }
         #endregion
     }

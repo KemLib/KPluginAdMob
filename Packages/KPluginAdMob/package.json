@@ -1,0 +1,21 @@
+{
+  "name": "com.kem.kplugin.admob",
+  "version": "1.0.0",
+  "displayName": "KPluginAdMob",
+  "description": "KPlugin Google AdMob",
+  "documentationUrl": "https://github.com/KemLib/KPluginAdMob/blob/main/README.md",
+  "changelogUrl": "https://github.com/KemLib/KPluginAdMob/blob/main/CHANGELOG.md",
+  "licensesUrl": "https://github.com/KemLib/KPluginAdMob/blob/main/LICENSE.md",
+  "keywords": [
+    "InfinityWorld",
+    "KPlugin",
+    "Tool",
+    "Ad",
+    "Admob"
+  ],
+  "author": {
+    "name": "Nguyen Van Hung",
+    "email": "nvhung.world@google.com",
+    "url": "https://www.facebook.com/Hung.FollowMe"
+  }
+}

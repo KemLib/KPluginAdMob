@@ -1,0 +1,5 @@
+﻿<Solution>
+  <Project Path="KPluginAdMobEditor.csproj" />
+  <Project Path="KPluginAdMob.csproj" />
+  <Project Path="Assembly-CSharp.csproj" />
+</Solution>

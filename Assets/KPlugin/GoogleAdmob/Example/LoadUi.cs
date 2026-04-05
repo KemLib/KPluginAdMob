@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 namespace KPlugin.GoogleAdMob.Example
 {
-    public class LoadUi : MonoBehaviour, IInitListener
+    public class LoadUi : MonoBehaviour
     {
         #region Properties
         private const string TEXT_PROGRESS_FORMAT = "{0} %";
