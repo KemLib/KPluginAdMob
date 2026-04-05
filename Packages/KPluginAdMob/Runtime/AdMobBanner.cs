@@ -1,10 +1,12 @@
 using GoogleMobileAds.Api;
 using KTool;
 using KTool.Advertisement;
+using KTool.Cron;
 using KTool.Init;
 using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace KPlugin.GoogleAdMob
 {
@@ -21,9 +23,9 @@ namespace KPlugin.GoogleAdMob
         [SerializeField, SelectAdId(AdMobAdType.Banner)]
         private int indexAd = 0;
 
-        private bool isIniting,
-            isLoading;
+        private bool isLoading;
         private int attemptLoad;
+        private bool isCreateAdObject;
         private BannerView adObject;
         private InitTrackingSource initTrackingSource;
         private AdBannerTrackingSource adTrackingSource;
@@ -76,6 +78,15 @@ namespace KPlugin.GoogleAdMob
         }
         #endregion
 
+        #region Methods Unity
+        private void OnDestroy()
+        {
+            if (instance != null && instance.GetInstanceID() == GetInstanceID())
+                instance = null;
+            Destroy();
+        }
+        #endregion
+
         #region Unity Event
         public IInitTracking InitBegin()
         {
@@ -83,35 +94,17 @@ namespace KPlugin.GoogleAdMob
                 return IInitTracking.Fail;
             //
             initTrackingSource = new InitTrackingSource(initIndispensable);
-            OnAdInited += Init_OnAdInited;
-            Init();
+            OnAdLoaded += Init_OnAdLoaded;
+            Load();
             return initTrackingSource;
         }
         public void InitEnd()
         {
 
         }
-        private void Init_OnAdInited(Ad source, bool isSuccess)
+        private void Init_OnAdLoaded(Ad source, bool isSuccess)
         {
-            OnAdInited -= Init_OnAdInited;
-            if (isSuccess)
-            {
-                OnAdLoaded += Init_OnLoaded;
-                if (!isLoading)
-                {
-                    isLoading = true;
-                    StartCoroutine(Ad_Load());
-                }
-            }
-            else
-            {
-                initTrackingSource.CompleteFail();
-                initTrackingSource = null;
-            }
-        }
-        private void Init_OnLoaded(Ad source, bool isSuccess)
-        {
-            OnAdLoaded -= Init_OnLoaded;
+            OnAdLoaded -= Init_OnAdLoaded;
             if (isSuccess)
                 initTrackingSource.CompleteSuccess();
             else
@@ -123,35 +116,37 @@ namespace KPlugin.GoogleAdMob
         #region Method
         public override void Init()
         {
-            if (IsInited || isIniting)
+            if (IsDestroy || IsInited)
                 return;
-            isIniting = true;
+            IsInited = true;
             //
             if (setInstance)
                 instance = this;
-            StartCoroutine(Ad_Create());
+            PushEvent_Inited(true);
         }
         public override void Load()
         {
-            if (!IsInited || IsLoaded || IsAutoReload || isLoading)
+            if (IsDestroy)
                 return;
-            isLoading = true;
+            Init();
             //
-            StartCoroutine(Ad_Load());
+            if (isCreateAdObject)
+            {
+                if (!IsAutoReload)
+                    Ad_LoadAd();
+            }
+            else
+            {
+                Ad_Create();
+            }
         }
         public override void Destroy()
         {
-            IsDestroy = true;
-            if (isIniting || isLoading)
+            if (IsDestroy)
                 return;
-            if (IsInited)
-            {
-                if (IsShow)
-                    Hide();
-                Ad_Destroy();
-            }
-            else
-                PushEvent_Destroy();
+            IsDestroy = true;
+            Ad_Destroy();
+            PushEvent_Destroy();
         }
         public override IAdBannerTracking Show()
         {
@@ -167,7 +162,11 @@ namespace KPlugin.GoogleAdMob
                 adTrackingSource = new AdBannerTrackingSource(this);
                 IsShow = true;
                 if (IsLoaded)
-                    CoroutineManager.Instance.Coroutine_Start(Delay_DisplayedAd());
+                {
+                    adObject.Show();
+                    PushEvent_Displayed(true);
+                    adTrackingSource.PushEvent_Displayed(true);
+                }
                 return adTrackingSource;
             }
         }
@@ -187,36 +186,27 @@ namespace KPlugin.GoogleAdMob
                 IsShow = false;
             }
         }
-        private IEnumerator Delay_DisplayedAd()
-        {
-            yield return new WaitForEndOfFrame();
-            adObject.Show();
-            PushEvent_Displayed(true);
-            adTrackingSource.PushEvent_Displayed(true);
-        }
         #endregion
 
         #region Ad
-        private IEnumerator Ad_Create()
+        private void Ad_Create()
         {
-            while (!AdMobManager.Instance.IsInit)
-                yield return new WaitForEndOfFrame();
+            if (IsDestroy || IsLoaded || isLoading)
+                return;
+            isLoading = true;
             //
-            if (IsDestroy)
+            if (adObject != null)
             {
-                isIniting = false;
-                PushEvent_Inited(false);
-                //
-                PushEvent_Destroy();
-                yield break;
+                adObject.Destroy();
+                adObject = null;
             }
             //
-            adObject = Utility.Create_AdBanner(AdId, SizeType, PositionType, Size, Position);
-            Ad_EventRegister();
-            //
-            IsInited = true;
-            isIniting = false;
-            PushEvent_Inited(true);
+            float delay = attemptLoad > 0 ? Mathf.Pow(2, attemptLoad) : 0;
+            CronObject.Create()
+                .Add(ConditionReadTime.Create(delay))
+                .Add(ConditionDelegate.Create(AdMobManager.IsReady))
+                .Add(CallbackAction.Create(Ad_LoadAd))
+                .Run();
         }
         private void Ad_Destroy()
         {
@@ -227,21 +217,18 @@ namespace KPlugin.GoogleAdMob
             }
             PushEvent_Destroy();
         }
-        private IEnumerator Ad_Load()
+        private void Ad_LoadAd()
         {
-            if (attemptLoad > 0)
-                yield return new WaitForSecondsRealtime(attemptLoad * 2);
-            else
-                yield return new WaitForEndOfFrame();
-            //
             if (IsDestroy)
             {
                 isLoading = false;
                 PushEvent_Loaded(false);
                 //
                 Ad_Destroy();
-                yield break;
             }
+            //
+            adObject = Utility.Create_AdBanner(AdId, SizeType, PositionType, Size, Position);
+            Ad_EventRegister();
             //
             var adRequest = new AdRequest();
             adObject.LoadAd(adRequest);
@@ -258,53 +245,36 @@ namespace KPlugin.GoogleAdMob
         }
         private void Ad_OnLoaded()
         {
-            attemptLoad = 0;
-            IsLoaded = true;
             isLoading = false;
-            //
             if (IsDestroy)
+                return;
+            //
+            IsLoaded = true;
+            attemptLoad = 0;
+            //
+            if (IsShow)
             {
-                PushEvent_Loaded(true);
-                //
-                Ad_Destroy();
+                adObject.Show();
+                PushEvent_Displayed(true);
+                adTrackingSource.PushEvent_Displayed(true);
             }
             else
             {
-                PushEvent_Loaded(true);
-                if (IsShow)
-                {
-                    adObject.Show();
-                    PushEvent_Displayed(true);
-                    adTrackingSource.PushEvent_Displayed(true);
-                }
-                else
-                {
-                    adObject.Hide();
-                }
+                adObject.Hide();
             }
+            PushEvent_Loaded(true);
         }
         private void Ad_OnLoadFailed(LoadAdError error)
         {
+            isLoading = false;
+            if (IsDestroy)
+                return;
+            //
+            attemptLoad = Mathf.Min(attemptLoad + 1, 6);
             if (error != null)
                 Debug.LogWarning(string.Format(ERROR_LOAD_FAIL, error.GetCode()));
             //
-            attemptLoad = Mathf.Min(attemptLoad + 1, 6);
-            IsLoaded = false;
-            if (IsDestroy)
-            {
-                isLoading = false;
-                PushEvent_Loaded(false);
-                //
-                Ad_Destroy();
-            }
-            else
-            {
-                if (IsAutoReload)
-                    StartCoroutine(Ad_Load());
-                else
-                    isLoading = false;
-                PushEvent_Loaded(false);
-            }
+            PushEvent_Loaded(false);
         }
         private void Ad_OnFullScreenContentOpened()
         {

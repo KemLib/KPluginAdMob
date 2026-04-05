@@ -25,8 +25,6 @@ namespace KPlugin.GoogleAdMob
             private set;
         }
 
-
-
         [SerializeField]
         private bool initIndispensable;
         [SerializeField]
