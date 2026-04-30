@@ -2,7 +2,7 @@ using KTool.FileIo;
 using UnityEditor;
 using UnityEngine;
 
-namespace KPlugin.GoogleAdMob.Editor
+namespace KPlugin.AdMob.Editor
 {
     public class GoogleAdMobSettingEditor
     {

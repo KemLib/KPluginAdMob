@@ -5,9 +5,8 @@ using KTool.Attribute;
 using KTool.Init;
 using System.Collections.Generic;
 using UnityEngine;
-using static UnityEngine.AudioSettings;
 
-namespace KPlugin.GoogleAdMob
+namespace KPlugin.AdMob
 {
     public class AdMobManager : MonoBehaviour, IIniter
     {
@@ -41,7 +40,8 @@ namespace KPlugin.GoogleAdMob
         private AdMobRewarded[] adRewardeds;
 
         private bool isInit,
-            isIniting;
+            isIniting,
+            isConsent;
         private InitTrackingSource initTracking;
 
         public bool IsInit => isInit;
@@ -80,7 +80,7 @@ namespace KPlugin.GoogleAdMob
         }
         private void AdMob_Init()
         {
-            if (IsInit || isIniting)
+            if (IsInit || isIniting || isConsent)
                 return;
             //
             MobileAds.SetiOSAppPauseOnBackground(true);
@@ -126,6 +126,7 @@ namespace KPlugin.GoogleAdMob
         #region AdMod Consent
         private void Consent_Init()
         {
+            isConsent = true;
             ConsentRequestParameters requestParameters = new ConsentRequestParameters
             {
                 // False means users are not under age.
@@ -145,6 +146,7 @@ namespace KPlugin.GoogleAdMob
                 }
                 else
                 {
+                    isConsent = false;
                     // If the error is null, the consent information state was updated.
                     // You are now ready to check if a form is available.
                     ConsentForm.LoadAndShowConsentFormIfRequired(Consent_OnDismissed);
@@ -172,6 +174,8 @@ namespace KPlugin.GoogleAdMob
         }
         private void Consent_OnComplete(string error)
         {
+            isConsent = false;
+            //
             string message;
             if (string.IsNullOrEmpty(error))
             {

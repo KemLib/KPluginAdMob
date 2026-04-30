@@ -1,7 +1,7 @@
 using KTool.Advertisement;
 using UnityEngine;
 
-namespace KPlugin.GoogleAdMob
+namespace KPlugin.AdMob
 {
     public static class Utility
     {

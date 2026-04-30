@@ -2,7 +2,7 @@ using KTool.Attribute.Editor;
 using UnityEditor;
 using UnityEngine;
 
-namespace KPlugin.GoogleAdMob.Editor
+namespace KPlugin.AdMob.Editor
 {
     [CustomPropertyDrawer(typeof(SelectAdIdAttribute))]
     public class SelectAdIdDrawer : PropertyDrawer

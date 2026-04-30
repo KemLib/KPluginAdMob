@@ -2,38 +2,33 @@ using KTool.Advertisement;
 using TMPro;
 using UnityEngine;
 
-namespace KPlugin.GoogleAdMob.Example
+namespace KPlugin.AdMob.Example
 {
-    public class PanelAdInterstitial : MonoBehaviour
+    public class PanelAdRewarded : MonoBehaviour
     {
         #region Properties
-        private const string CLICK_INIT = "Ad Interstitial: Click init",
-            CLICK_LOAD = "Ad Interstitial: Click load",
-            CLICK_SHOW = "Ad Interstitial: Click show";
-        private const string AD_EVENT_INIT = "Ad Interstitial: even Init",
-            AD_EVENT_LOADED = "Ad Interstitial: even Loaded {0}",
-            AD_EVENT_DISPLAYED = "Ad Interstitial: even Displayed {0}",
-            AD_EVENT_CLICKED = "Ad Interstitial: even Clicked",
-            AD_EVENT_HIDDEN = "Ad Interstitial: even Hidden",
-            AD_EVENT_REVENUE_PAID = "Ad Interstitial: even RevenuePaid {0}-{1}",
-            AD_EVENT_DESTROY = "Ad Interstitial: even Destroy";
-        private const string ERROR_ADD_EMPTY = "Ad Interstitial: No objects to select",
-            ERROR_AD_IS_INITED = "Ad Interstitial: ad is inited",
-            ERROR_AD_IS_NOT_INIT = "Ad Interstitial: ad not init",
-            ERROR_AD_IS_LOADED = "Ad Interstitial: ad is loaded",
-            ERROR_AD_SHOW = "Ad Interstitial show success",
-            ERROR_AD_SHOW_FAIL = "Ad Interstitial show fail: {0}";
+        private const string AD_EVENT_LOADED = "Ad Rewarded: even Loaded {0}",
+            AD_EVENT_DISPLAYED = "Ad Rewarded: even Displayed {0}",
+            AD_EVENT_CLICKED = "Ad Rewarded: even Clicked",
+            AD_EVENT_HIDDEN = "Ad Rewarded: even Hidden",
+            AD_EVENT_REVENUE_PAID = "Ad Rewarded: even RevenuePaid {0}-{1}",
+            AD_EVENT_DESTROY = "Ad Rewarded: even Destroy",
+            AD_EVENT_RECEIVED_REWARD = "Ad Rewarded: even ReceivedReward {0}-{1}";
+        private const string ERROR_ADD_EMPTY = "Ad Rewarded: No objects to select",
+            ERROR_AD_IS_LOADED = "Ad Rewarded: ad is loaded",
+            AD_SHOW_SUCCESS = "Ad Rewarded show success",
+            ERROR_AD_SHOW_FAIL = "Ad Rewarded show fail: {0}";
 
         [SerializeField]
         private TMP_Dropdown dropdownAd;
 
         private PanelLog panelLog;
-        private AdMobInterstitial selectAd;
+        private AdMobRewarded selectAd;
 
         private AdMobManager manager => AdMobManager.Instance;
         public bool IsShow => gameObject.activeSelf;
         public int Count => dropdownAd.options.Count;
-        public AdMobInterstitial SelectAd => selectAd;
+        public AdMobRewarded SelectAd => selectAd;
         #endregion
 
         #region Unity Events
@@ -45,17 +40,17 @@ namespace KPlugin.GoogleAdMob.Example
         {
             this.panelLog = panelLog;
             //
-            if (manager == null || manager.Interstitial_Count() == 0)
+            if (manager == null || manager.Rewarded_Count() == 0)
             {
                 dropdownAd.options.Clear();
                 return;
             }
             //
             dropdownAd.options.Clear();
-            int count = manager.Interstitial_Count();
+            int count = manager.Rewarded_Count();
             for (int i = 0; i < count; i++)
             {
-                AdMobInterstitial ad = manager.Interstitial_Get(i);
+                AdMobRewarded ad = manager.Rewarded_Get(i);
                 dropdownAd.options.Add(new TMP_Dropdown.OptionData(ad.Name));
             }
             dropdownAd.value = 0;
@@ -88,31 +83,15 @@ namespace KPlugin.GoogleAdMob.Example
         public void OnSelectAd(int value)
         {
             SelectAd_EventUnRegister();
-            selectAd = manager.Interstitial_Get(value);
+            selectAd = manager.Rewarded_Get(value);
             SelectAd_EventRegister();
-        }
-        public void OnClick_Init()
-        {
-            if (!IsShow)
-                return;
-            //
-            panelLog.AddLog(CLICK_INIT);
-            //
-            if (SelectAd.IsInited)
-                panelLog.AddLog(ERROR_AD_IS_INITED);
-            else
-                SelectAd.Init();
         }
         public void OnClick_Load()
         {
             if (!IsShow)
                 return;
             //
-            panelLog.AddLog(CLICK_LOAD);
-            //
-            if (!SelectAd.IsInited)
-                panelLog.AddLog(ERROR_AD_IS_NOT_INIT);
-            else if (SelectAd.IsLoaded)
+            if (SelectAd.IsLoaded)
                 panelLog.AddLog(ERROR_AD_IS_LOADED);
             else
                 SelectAd.Load();
@@ -122,11 +101,9 @@ namespace KPlugin.GoogleAdMob.Example
             if (!IsShow)
                 return;
             //
-            panelLog.AddLog(CLICK_SHOW);
-            //
-            IAdTracking adTracking = SelectAd.Show();
+            IAdRewardedTracking adTracking = SelectAd.Show();
             if (adTracking.IsComplete)
-                panelLog.AddLog(ERROR_AD_SHOW);
+                panelLog.AddLog(AD_SHOW_SUCCESS);
             else
                 panelLog.AddLog(string.Format(ERROR_AD_SHOW_FAIL, adTracking.ErrorMessage));
         }
@@ -138,52 +115,52 @@ namespace KPlugin.GoogleAdMob.Example
             if (selectAd == null)
                 return;
             //
-            selectAd.OnAdInited += SelectAd_OnAdInited;
             selectAd.OnAdLoaded += SelectAd_OnAdLoaded;
             selectAd.OnAdDisplayed += SelectAd_OnAdDisplayed;
             selectAd.OnAdClicked += SelectAd_OnAdClicked;
             selectAd.OnAdHidden += SelectAd_OnAdHidden;
             selectAd.OnAdRevenuePaid += SelectAd_OnAdRevenuePaid;
             selectAd.OnAdDestroy += SelectAd_OnAdDestroy;
+            selectAd.OnAdReceivedReward += SelectAd_OnAdReceivedReward;
         }
         private void SelectAd_EventUnRegister()
         {
             if (selectAd == null)
                 return;
             //
-            selectAd.OnAdInited -= SelectAd_OnAdInited;
             selectAd.OnAdLoaded -= SelectAd_OnAdLoaded;
             selectAd.OnAdDisplayed -= SelectAd_OnAdDisplayed;
             selectAd.OnAdClicked -= SelectAd_OnAdClicked;
             selectAd.OnAdHidden -= SelectAd_OnAdHidden;
             selectAd.OnAdRevenuePaid -= SelectAd_OnAdRevenuePaid;
+            selectAd.OnAdReceivedReward -= SelectAd_OnAdReceivedReward;
             selectAd.OnAdDestroy -= SelectAd_OnAdDestroy;
         }
-        private void SelectAd_OnAdInited(Ad adSource, bool isSuccess)
-        {
-            panelLog.AddLog(AD_EVENT_INIT);
-        }
-        private void SelectAd_OnAdLoaded(Ad adSource, bool isSuccess)
+        private void SelectAd_OnAdLoaded(AdBase adSource, bool isSuccess)
         {
             panelLog.AddLog(string.Format(AD_EVENT_LOADED, isSuccess));
         }
-        private void SelectAd_OnAdDisplayed(Ad adSource, bool isSuccess)
+        private void SelectAd_OnAdDisplayed(AdBase adSource, bool isSuccess, string placement)
         {
             panelLog.AddLog(string.Format(AD_EVENT_DISPLAYED, isSuccess));
         }
-        private void SelectAd_OnAdClicked(Ad adSource)
+        private void SelectAd_OnAdClicked(AdBase adSource, string placement)
         {
             panelLog.AddLog(AD_EVENT_CLICKED);
         }
-        private void SelectAd_OnAdHidden(Ad adSource)
+        private void SelectAd_OnAdHidden(AdBase adSource, string placement)
         {
             panelLog.AddLog(AD_EVENT_HIDDEN);
         }
-        private void SelectAd_OnAdRevenuePaid(Ad adSource, AdRevenuePaid revenuePaid)
+        private void SelectAd_OnAdRevenuePaid(AdBase adSource, AdRevenuePaid revenuePaid, string placement)
         {
             panelLog.AddLog(string.Format(AD_EVENT_REVENUE_PAID, revenuePaid.Value, revenuePaid.Currency));
         }
-        private void SelectAd_OnAdDestroy(Ad adSource)
+        private void SelectAd_OnAdReceivedReward(AdBase adSource, AdRewardReceived rewardReceived, string placement)
+        {
+            panelLog.AddLog(string.Format(AD_EVENT_RECEIVED_REWARD, rewardReceived.Label, rewardReceived.Value));
+        }
+        private void SelectAd_OnAdDestroy(AdBase adSource)
         {
             panelLog.AddLog(AD_EVENT_DESTROY);
         }

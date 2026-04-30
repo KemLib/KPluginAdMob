@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace KPlugin.GoogleAdMob
+namespace KPlugin.AdMob
 {
     public class AdMobSetting : ScriptableObject
     {

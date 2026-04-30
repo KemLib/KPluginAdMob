@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace KPlugin.GoogleAdMob
+namespace KPlugin.AdMob
 {
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = false)]
     public class SelectAdIdAttribute : PropertyAttribute

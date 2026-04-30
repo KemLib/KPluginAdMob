@@ -1,7 +1,7 @@
 ﻿using UnityEditor;
 using UnityEngine;
 
-namespace KPlugin.GoogleAdMob.Editor
+namespace KPlugin.AdMob.Editor
 {
 
     [CustomEditor(typeof(AdMobRewarded))]
@@ -10,7 +10,7 @@ namespace KPlugin.GoogleAdMob.Editor
         #region Properties
         private SerializedProperty propertyInitIndispensable,
             propertySetInstance,
-            propertyIsAutoReload, 
+            propertyIsAutoReload,
             propertyAdName,
             propertyIndexAd;
         #endregion

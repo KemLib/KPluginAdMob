@@ -6,10 +6,10 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/KPlugin/GoogleAdmob/Example/Demo_InitAdMob.unity
+    path: Assets/KPlugin/Admob/Example/Demo_InitAdMob.unity
     guid: 42a93165fd37f594a8fd6a90d401f065
   - enabled: 1
-    path: Assets/KPlugin/GoogleAdmob/Example/Demo_AdMob.unity
+    path: Assets/KPlugin/Admob/Example/Demo_AdMob.unity
     guid: 84fb3d0ee996f664bae4add7bb8fd9d7
   m_configObjects: {}
   m_UseUCBPForAssetBundles: 0

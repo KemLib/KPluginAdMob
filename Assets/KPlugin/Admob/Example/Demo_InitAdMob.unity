@@ -519,7 +519,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   adName: KPlugin_AdMob_AppOpen
-  isAutoReload: 0
+  isAutoReload: 1
   initIndispensable: 0
   setInstance: 0
   indexAd: 0
@@ -665,7 +665,7 @@ MonoBehaviour:
   - stepName: Load ad Banner
     gameobjects:
     - {fileID: 1115313039}
-  - stepName: Load ad Inter, Reward, RewardInter
+  - stepName: Load ad Inter, Reward
     gameobjects:
     - {fileID: 1407244699}
     - {fileID: 322631393}

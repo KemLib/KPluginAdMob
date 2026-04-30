@@ -1,7 +1,7 @@
 using TMPro;
 using UnityEngine;
 
-namespace KPlugin.GoogleAdMob.Example
+namespace KPlugin.AdMob.Example
 {
     public class PanelLog : MonoBehaviour
     {

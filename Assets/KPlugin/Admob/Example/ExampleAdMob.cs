@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace KPlugin.GoogleAdMob.Example
+namespace KPlugin.AdMob.Example
 {
     public class ExampleAdMob : MonoBehaviour
     {

@@ -2,7 +2,7 @@
 using KTool.Init;
 using UnityEngine;
 
-namespace KPlugin.GoogleAdmob.Example
+namespace KPlugin.AdMob.Example
 {
     public class LoadScene : MonoBehaviour
     {

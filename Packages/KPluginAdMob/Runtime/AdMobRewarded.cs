@@ -3,18 +3,17 @@ using KTool.Advertisement;
 using KTool.Cron;
 using KTool.Init;
 using System;
-using System.Collections;
 using UnityEngine;
 
-namespace KPlugin.GoogleAdMob
+namespace KPlugin.AdMob
 {
     public class AdMobRewarded : AdRewarded, IIniter
     {
         #region Properties
-        private const string ERROR_LOAD_FAIL = "Ad load fail code: {0}",
-            ERROR_DISPLAY_FAIL = "Ad display fail code: {0}",
-            ERROR_SHOW_FAIL_AD_NOT_READY = "Ad show fail: ad not ready",
-            ERROR_SHOW_FAIL_AD_IS_SHOWED = "Ad show fail: ad is showing";
+        private const string ERROR_LOAD_FAIL = "Ad Rewarded load fail code: {0}",
+            ERROR_DISPLAY_FAIL = "Ad Rewarded display fail code: {0}",
+            ERROR_SHOW_FAIL_AD_NOT_READY = "Ad Rewarded show fail: ad not ready",
+            ERROR_SHOW_FAIL_AD_IS_SHOWED = "Ad Rewarded show fail: ad is showing";
         private const int AD_EXPIRE_HOUR = 4;
 
         [SerializeField]
@@ -24,13 +23,12 @@ namespace KPlugin.GoogleAdMob
         [SerializeField, SelectAdId(AdMobAdType.Rewarded)]
         private int indexAd = 0;
 
-        private bool isLoading;
+        private bool isInit,
+            isLoading;
         private int attemptLoad;
         private RewardedAd adObject;
         private DateTime expireTime;
         private InitTrackingSource initTrackingSource;
-        private AdRewardedTrackingSource adTrackingSource;
-        private string placement;
 
         public event Action OnAdImpressionRecorded;
 
@@ -73,7 +71,7 @@ namespace KPlugin.GoogleAdMob
         #region Init
         public IInitTracking InitBegin()
         {
-            if (IsDestroy || IsInited || initTrackingSource != null)
+            if (IsDestroy || isInit || initTrackingSource != null)
                 return IInitTracking.Fail;
             //
             initTrackingSource = new InitTrackingSource(initIndispensable);
@@ -86,7 +84,7 @@ namespace KPlugin.GoogleAdMob
         {
 
         }
-        private void Init_OnAdLoaded(Ad source, bool isSuccess)
+        private void Init_OnAdLoaded(AdBase source, bool isSuccess)
         {
             OnAdLoaded -= Init_OnAdLoaded;
             if (isSuccess)
@@ -98,21 +96,18 @@ namespace KPlugin.GoogleAdMob
         #endregion
 
         #region Methods
-        public override void Init()
-        {
-            if (IsDestroy || IsInited)
-                return;
-            IsInited = true;
-            //
-            if (setInstance)
-                instance = this;
-            PushEvent_Inited(true);
-        }
         public override void Load()
         {
             if (IsDestroy)
                 return;
-            Init();
+            //
+            if (!isInit)
+            {
+                isInit = true;
+                //
+                if (setInstance)
+                    instance = this;
+            }
             //
             Ad_Create();
         }
@@ -120,8 +115,9 @@ namespace KPlugin.GoogleAdMob
         {
             if (IsDestroy)
                 return;
+            //
             IsDestroy = true;
-            if (IsInited)
+            if (isInit)
             {
                 if (!IsShow)
                 {
@@ -133,104 +129,36 @@ namespace KPlugin.GoogleAdMob
                 PushEvent_Destroy();
             }
         }
-        public override IAdRewardedTracking Show(string placement = "")
+        protected override bool OnShow(out string error)
         {
             if (IsShow)
-                return new AdRewardedTrackingSource(this, ERROR_SHOW_FAIL_AD_IS_SHOWED);
+            {
+                error = ERROR_SHOW_FAIL_AD_IS_SHOWED;
+                return false;
+            }
             if (!IsReady)
-                return new AdRewardedTrackingSource(this, ERROR_SHOW_FAIL_AD_NOT_READY);
+            {
+                error = ERROR_SHOW_FAIL_AD_NOT_READY;
+                return false;
+            }
             //
-            this.placement = placement;
-            adTrackingSource = new AdRewardedTrackingSource(this);
             IsShow = true;
-            adObject.Show(Ad_OnReward);
-            return adTrackingSource;
+            adObject.Show(Ad_Rewarded);
+            //
+            error = string.Empty;
+            return true;
         }
         private void Update_ExpireTime()
         {
-            if (!IsLoaded || IsShow || DateTime.Now < expireTime)
+            if (!IsReady || IsShow || DateTime.Now < expireTime)
                 return;
             //
+            IsLoaded = false;
             Load();
         }
         #endregion
 
-        #region Ad
-        private void Ad_Create()
-        {
-            if (IsDestroy || IsLoaded || isLoading)
-                return;
-            isLoading = true;
-            //
-            if (adObject != null)
-            {
-                adObject.Destroy();
-                adObject = null;
-            }
-            //
-            float delay = attemptLoad > 0 ? Mathf.Pow(2, attemptLoad) : 0;
-            CronObject.Create()
-                .Add(ConditionReadTime.Create(delay))
-                .Add(ConditionDelegate.Create(AdMobManager.IsReady))
-                .Add(CallbackAction.Create(Ad_LoadAd))
-                .Run();
-        }
-        private void Ad_Destroy()
-        {
-            if (adObject != null)
-            {
-                adObject.Destroy();
-                adObject = null;
-            }
-            PushEvent_Destroy();
-        }
-        private void Ad_LoadAd()
-        {
-            if (IsDestroy)
-            {
-                isLoading = false;
-                return;
-            }
-            //
-            AdRequest adRequest = new AdRequest();
-            RewardedAd.Load(AdId, adRequest, Ad_OnLoadComplete);
-        }
-        private void Ad_OnLoadComplete(RewardedAd adObject, LoadAdError error)
-        {
-            if (error != null || adObject == null)
-            {
-                isLoading = false;
-                if (IsDestroy)
-                    return;
-                if (IsAutoReload)
-                    Ad_Create();
-                //
-                if (error != null)
-                    Debug.LogWarning(string.Format(ERROR_LOAD_FAIL, error.GetCode()));
-                //
-                attemptLoad = Mathf.Min(attemptLoad + 1, 6);
-                PushEvent_Loaded(false);
-                //
-                if (IsAutoReload)
-                    Ad_Create();
-            }
-            else
-            {
-                isLoading = false;
-                if (IsDestroy)
-                {
-                    adObject.Destroy();
-                    return;
-                }
-                IsLoaded = true;
-                attemptLoad = 0;
-                this.adObject = adObject;
-                Ad_EventRegister();
-                expireTime = DateTime.Now + TimeSpan.FromHours(AD_EXPIRE_HOUR);
-                //
-                PushEvent_Loaded(true);
-            }
-        }
+        #region Ad Event
         private void Ad_EventRegister()
         {
             adObject.OnAdFullScreenContentOpened += Ad_OnFullScreenContentOpened;
@@ -240,26 +168,119 @@ namespace KPlugin.GoogleAdMob
             adObject.OnAdPaid += Ad_OnPaid;
             adObject.OnAdImpressionRecorded += Ad_OnImpressionRecorded;
         }
+        private void Ad_EventUnRegister()
+        {
+            adObject.OnAdFullScreenContentOpened -= Ad_OnFullScreenContentOpened;
+            adObject.OnAdFullScreenContentFailed -= Ad_OnFullScreenContentFailed;
+            adObject.OnAdClicked -= Ad_OnClicked;
+            adObject.OnAdFullScreenContentClosed -= Ad_OnFullScreenContentClosed;
+            adObject.OnAdPaid -= Ad_OnPaid;
+            adObject.OnAdImpressionRecorded -= Ad_OnImpressionRecorded;
+        }
+        #endregion
+
+        #region Ad
+        private void Ad_Destroy()
+        {
+            if (adObject != null)
+            {
+                Ad_EventUnRegister();
+                adObject.Destroy();
+                adObject = null;
+            }
+            PushEvent_Destroy();
+        }
+        private void Ad_Create()
+        {
+            if (IsDestroy || IsLoaded || isLoading)
+                return;
+            isLoading = true;
+            //
+            if (adObject != null)
+            {
+                Ad_EventUnRegister();
+                adObject.Destroy();
+                adObject = null;
+            }
+            //
+            float delay = attemptLoad > 0 ? Mathf.Pow(2, attemptLoad) : 0;
+            if (delay <= 0 && AdMobManager.IsReady())
+            {
+                Ad_LoadAd();
+            }
+            else
+            {
+                CronObject.Create()
+                    .Add(ConditionReadTime.Create(delay))
+                    .Add(ConditionDelegate.Create(AdMobManager.IsReady))
+                    .Add(CallbackAction.Create(Ad_LoadAd))
+                    .Run();
+            }
+        }
+        private void Ad_LoadAd()
+        {
+            if (IsDestroy)
+            {
+                isLoading = false;
+            }
+            else
+            {
+                AdRequest adRequest = new AdRequest();
+                RewardedAd.Load(AdId, adRequest, Ad_OnLoadComplete);
+            }
+        }
+        private void Ad_OnLoadComplete(RewardedAd adObject, LoadAdError error)
+        {
+            isLoading = false;
+            if (error != null || adObject == null)
+            {
+                if (IsDestroy)
+                    return;
+                //
+                attemptLoad = Mathf.Min(attemptLoad + 1, 6);
+                if (error != null)
+                    Debug.LogWarning(string.Format(ERROR_LOAD_FAIL, error.GetCode()));
+                PushEvent_Loaded(false);
+                //
+                if (IsAutoReload)
+                    Ad_Create();
+            }
+            else
+            {
+                if (IsDestroy)
+                {
+                    adObject.Destroy();
+                }
+                else
+                {
+                    IsLoaded = true;
+                    attemptLoad = 0;
+                    expireTime = DateTime.Now + TimeSpan.FromHours(AD_EXPIRE_HOUR);
+                    this.adObject = adObject;
+                    Ad_EventRegister();
+                    //
+                    PushEvent_Loaded(true);
+                }
+            }
+        }
         private void Ad_OnFullScreenContentOpened()
         {
             PushEvent_Displayed(true);
-            adTrackingSource.PushEvent_Displayed(true);
         }
         private void Ad_OnFullScreenContentFailed(AdError adError)
         {
             IsShow = false;
             IsLoaded = false;
+            if (adError != null)
+                Debug.LogWarning(string.Format(ERROR_DISPLAY_FAIL, adError.GetCode()));
+            PushEvent_Displayed(false);
+            //
             if (IsDestroy)
             {
                 Ad_Destroy();
             }
             else
             {
-                if (adError != null)
-                    Debug.LogWarning(string.Format(ERROR_DISPLAY_FAIL, adError.GetCode()));
-                PushEvent_Displayed(false);
-                adTrackingSource.PushEvent_Displayed(false);
-                //
                 if (IsAutoReload)
                     Ad_Create();
             }
@@ -267,25 +288,19 @@ namespace KPlugin.GoogleAdMob
         private void Ad_OnClicked()
         {
             PushEvent_Clicked();
-            adTrackingSource.PushEvent_Clicked();
         }
         private void Ad_OnFullScreenContentClosed()
         {
             IsShow = false;
             IsLoaded = false;
+            PushEvent_Hidden();
             //
             if (IsDestroy)
             {
-                PushEvent_Hidden();
-                adTrackingSource.PushEvent_Hidden();
-                //
                 Ad_Destroy();
             }
             else
             {
-                PushEvent_Hidden();
-                adTrackingSource.PushEvent_Hidden();
-                //
                 if (IsAutoReload)
                     Ad_Create();
             }
@@ -301,22 +316,20 @@ namespace KPlugin.GoogleAdMob
                 idAd: AdId,
                 adType: AdType,
                 countryCode: AdMobManager.ADMOB_COUNTRY_CODE,
-                placement: placement,
+                placement: Placement,
                 value: adValue.Value / AdMobManager.VALUE_SCALE,
                 currency: adValue.CurrencyCode);
             //
             PushEvent_RevenuePaid(revenuePaid);
-            adTrackingSource.PushEvent_RevenuePaid(revenuePaid);
         }
         private void Ad_OnImpressionRecorded()
         {
             OnAdImpressionRecorded?.Invoke();
         }
-        private void Ad_OnReward(Reward reward)
+        private void Ad_Rewarded(Reward reward)
         {
-            AdRewardReceived adRewardReceived = new AdRewardReceived(reward.Type, true, reward.Amount);
-            PushEvent_ReceivedReward(adRewardReceived);
-            adTrackingSource.PushEvent_ReceivedReward(adRewardReceived);
+            AdRewardReceived rewardReceived = new AdRewardReceived(string.Empty, true, reward.Amount);
+            PushEvent_ReceivedReward(rewardReceived);
         }
         #endregion
     }

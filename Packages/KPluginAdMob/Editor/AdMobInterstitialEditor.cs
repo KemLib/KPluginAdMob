@@ -1,7 +1,7 @@
 ﻿using UnityEditor;
 using UnityEngine;
 
-namespace KPlugin.GoogleAdMob.Editor
+namespace KPlugin.AdMob.Editor
 {
 
     [CustomEditor(typeof(AdMobInterstitial))]

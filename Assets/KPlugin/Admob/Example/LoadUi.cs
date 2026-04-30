@@ -1,9 +1,8 @@
-using KTool.Init;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace KPlugin.GoogleAdMob.Example
+namespace KPlugin.AdMob.Example
 {
     public class LoadUi : MonoBehaviour
     {

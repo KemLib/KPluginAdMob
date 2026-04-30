@@ -1,4 +1,4 @@
-namespace KPlugin.GoogleAdMob
+namespace KPlugin.AdMob
 {
     public enum AdMobAdType
     {
