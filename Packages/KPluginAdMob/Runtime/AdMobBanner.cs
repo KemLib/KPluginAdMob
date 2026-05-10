@@ -170,8 +170,8 @@ namespace KPlugin.AdMob
             if (!IsShow)
                 return false;
             //
-            adObject.Hide();
             IsShow = false;
+            adObject.Hide();
             PushEvent_Hidden();
             //
             return true;
@@ -308,6 +308,11 @@ namespace KPlugin.AdMob
             IsLoaded = true;
             attemptLoad = 0;
             PushEvent_Loaded(true);
+            //
+            if (!IsShow)
+            {
+                adObject.Hide();
+            }
         }
         private void Ad_OnLoadFailed(LoadAdError error)
         {

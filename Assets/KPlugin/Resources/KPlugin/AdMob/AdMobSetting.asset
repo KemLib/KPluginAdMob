@@ -13,15 +13,15 @@ MonoBehaviour:
   m_Name: AdMobSetting
   m_EditorClassIdentifier: 
   appOpenIds:
-  - androidId: default_id_appopen
-    iosId: default_id_appopen
+  - androidId: ca-app-pub-3940256099942544/9257395921
+    iosId: ca-app-pub-3940256099942544/5575463023
   bannerIds:
-  - androidId: default_id_banner
-    iosId: default_id_banner
+  - androidId: ca-app-pub-3940256099942544/6300978111
+    iosId: ca-app-pub-3940256099942544/2934735716
   interstitialIds:
-  - androidId: default_id_inter
-    iosId: default_id_inter
+  - androidId: ca-app-pub-3940256099942544/1033173712
+    iosId: ca-app-pub-3940256099942544/4411468910
   rewardedIds:
-  - androidId: default_id_reward
-    iosId: default_id_reward
+  - androidId: ca-app-pub-3940256099942544/5224354917
+    iosId: ca-app-pub-3940256099942544/1712485313
   rewardedInterstitialIds: []

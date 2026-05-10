@@ -250,17 +250,16 @@ namespace KPlugin.AdMob
                 if (IsDestroy)
                 {
                     adObject.Destroy();
+                    return;
                 }
-                else
-                {
-                    IsLoaded = true;
-                    attemptLoad = 0;
-                    expireTime = DateTime.Now + TimeSpan.FromHours(AD_EXPIRE_HOUR);
-                    this.adObject = adObject;
-                    Ad_EventRegister();
-                    //
-                    PushEvent_Loaded(true);
-                }
+                //
+                IsLoaded = true;
+                attemptLoad = 0;
+                expireTime = DateTime.Now + TimeSpan.FromHours(AD_EXPIRE_HOUR);
+                this.adObject = adObject;
+                Ad_EventRegister();
+                //
+                PushEvent_Loaded(true);
             }
         }
         private void Ad_OnFullScreenContentOpened()
